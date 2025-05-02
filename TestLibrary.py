@@ -62,3 +62,47 @@ def plot_projectile_motion(v0, angle, air_res=0.0, mass=1.0, dt=0.1, brownian_st
 
 #uncomment this line to test graph
 #plot_projectile_motion(50, 45, air_res=0.1, mass=1.0, dt=0.1, brownian_strength=1.1)
+
+
+#need to put in input paramaters
+def heat_equation_rod():
+    """
+    Simulates the heat equation on a 1D rod using finite difference method.
+    """
+    # Parameters
+    L = 10.0  # Length of the rod (m)
+    T = 2.0   # Total time (s)
+    Nx = 100  # Number of spatial points
+    Nt = 200  # Number of time steps
+    alpha = 0.01  # Thermal diffusivity (m^2/s)
+
+    dx = L / (Nx - 1)  # Spatial step size
+    dt = T / Nt       # Time step size
+
+    # Stability condition
+    if alpha * dt / dx**2 > 0.5:
+        raise ValueError("Stability condition not met: alpha * dt / dx^2 <= 0.5")
+
+    # Initial condition: u(x,0) = sin(pi*x/L)
+    x = np.linspace(0, L, Nx)
+    u = np.sin(np.pi * x / L)
+
+    # Time-stepping loop
+    for n in range(1, Nt):
+        u_new = np.copy(u)
+        for i in range(1, Nx - 1):
+            u_new[i] = u[i] + alpha * dt / dx**2 * (u[i+1] - 2*u[i] + u[i-1])
+        u = u_new
+    
+    df = pd.DataFrame({"x": x, "u": u})
+    
+    plt.figure(figsize=(10, 5))
+    plt.plot(x, u, label=f"t={T} s")
+    plt.title("Heat Equation on a 1D Rod")
+    plt.xlabel("Position (m)")
+    plt.ylabel("Temperature (°C)")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+    
+    return df
