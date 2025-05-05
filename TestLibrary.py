@@ -106,3 +106,34 @@ def heat_equation_rod():
     plt.show()
     
     return df
+
+#heat_equation_rod()
+#uncomment this line to test graph
+
+def one_dimensional_wave_equation():
+    """
+    Simulates the one-dimensional wave equation using finite difference method.
+    """
+    # Parameters
+    L = 10.0  # Length of the string (m)
+    T = 2.0   # Total time (s)
+    Nx = 100  # Number of spatial points
+    Nt = 200  # Number of time steps
+    c = 1.0   # Wave speed (m/s)
+
+    dx = L / (Nx - 1)  # Spatial step size
+    dt = T / Nt       # Time step size
+
+    # Stability condition
+    if c * dt / dx > 1:
+        raise ValueError("Stability condition not met: c * dt / dx <= 1")
+
+    # Initial condition: u(x,0) = sin(pi*x/L)
+    x = np.linspace(0, L, Nx)
+    u = np.sin(np.pi * x / L)
+    u_new = np.copy(u)
+    u_prev = np.copy(u)
+
+    u_prev[1:-1] += 0.5 * (c * dt / dx)**2 * (u[2:] - 2*u[1:-1] + u[:-2])
+    
+ 
